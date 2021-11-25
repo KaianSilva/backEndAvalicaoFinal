@@ -1,5 +1,6 @@
 import express, {Request, Response} from 'express';
 import { stringify } from 'querystring';
+import cors from 'cors';
 const app = express();
 import 'dotenv/config'
 
@@ -7,7 +8,7 @@ const port = process.env.PORT || 3333
 
 app.listen(port, () => console.log(`Servidor iniciado... ${port}`));
 
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -86,10 +87,17 @@ app.get('/users/:id',(req:Request , res: Response)=>{
 })
 
 app.get('/users',(req:Request , res: Response)=>{
-    
+    let allUsers = []
+    allUsers = users.map((users) =>{
+        
+        const {messages,pass, ...userSemM} = users
+        return userSemM
+        
+    })
 
-    res.send(`Resultado: ${JSON.stringify(users)}`)
-
+    /* res.send(`Resultado: ${JSON.stringify(allUsers)}`)
+ */
+    res.status(200).json(users)
 })
 
 
