@@ -192,7 +192,8 @@ app.get('/users/:userId/messages',(req:Request,res:Response)=>{
         
             if (indice > -1){
 
-                res.send(`Resultado: ${JSON.stringify(users[indice].messages)}`)
+                /* res.send(`Resultado: ${JSON.stringify(users[indice].messages)}`) */
+                res.status(200).json(users[indice].messages)
             }
 
 
