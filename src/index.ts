@@ -256,6 +256,7 @@ app.post('/users/:userId/messages',(req:Request,res:Response)=>{
                 idMessage++
                 let messages1 = new Messages(idMessage,title,description)
                 users[indice].messages.push(messages1)
+                res.status(201).json(users[indice].messages)
                
             }
 
