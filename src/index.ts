@@ -97,7 +97,7 @@ app.get('/users',(req:Request , res: Response)=>{
 
     /* res.send(`Resultado: ${JSON.stringify(allUsers)}`)
  */
-    res.status(200).json(users)
+    res.status(200).json(allUsers)
 })
 
 
@@ -110,7 +110,8 @@ app.post('/users',(req:Request,res:Response)=>{
     let validacao: boolean = true
     
     
-    console.log(id)
+    
+    console.log(name)
     if (name != 'undefined' || pass != 'undefined'   ) {
         
         for (let index = 0; index < users.length; index++) {
@@ -125,7 +126,12 @@ app.post('/users',(req:Request,res:Response)=>{
             id++
             let user1 = new User(id,name,pass)
             users.push(user1)
-            res.send(`Adicionado`)
+            console.log(users[id])
+
+            let indice:number = users.findIndex( users => users.id == id );
+
+
+            res.status(201).json(users[indice])
         }else{
             res.status(400).send(`erro`)
         }
@@ -215,7 +221,7 @@ app.get('/users/:userId/messages/:id',(req:Request,res:Response)=>{
                 console.log(indexMessage)
                 if (indexMessage > -1) {
                     console.log('if..')
-                    res.send(`Resultado: ${JSON.stringify(users[indice].messages[indexMessage])}`)
+                    res.status(200).json(users[indice].messages[indexMessage])
                 }else{  res.status(400).send(`nao tem transações`)}
 
                 
@@ -249,8 +255,7 @@ app.post('/users/:userId/messages',(req:Request,res:Response)=>{
                 idMessage++
                 let messages1 = new Messages(idMessage,title,description)
                 users[indice].messages.push(messages1)
-                res.send(`Mensagem Adicionada`)
-                
+               
             }
 
          
@@ -258,6 +263,76 @@ app.post('/users/:userId/messages',(req:Request,res:Response)=>{
     }
 
     res.status(400).send(`erro`)
+
+    
+
+})
+
+
+app.put('/users/:userId/messages/:id',(req:Request,res:Response)=>{
+
+    const userId = Number(req.params.userId)
+    const messageId = Number(req.params.id)
+
+    const title = String(req.body.title)
+    const description = String(req.body.description)   
+    console.log(messageId)
+    
+    let indice:number = users.findIndex( users => users.id == userId );
+
+    let indexMessage:number = users[indice].messages.findIndex( messages => messages.id == messageId );
+        console.log(indexMessage)
+            if (indice > -1){
+
+                console.log(indexMessage)
+                if (indexMessage > -1) {
+                   
+                    users[indice].messages[indexMessage].title = title
+                    users[indice].messages[indexMessage].description = description
+                    res.status(202).json(users[indice].messages[indexMessage])
+
+                }else{  res.status(400).send(`nao tem mensagens`)}
+
+                
+            }else{  res.status(400).send(`nao tem usuario`)}
+
+   
+
+
+})
+
+
+
+
+app.delete('/users/:userId/messages/:id',(req:Request,res:Response)=>{
+
+    const userId = Number(req.params.userId)
+    const messageId = Number(req.params.id)
+    
+
+    
+
+    /* if(indice > -1){
+        users.splice(indice,1)
+        res.status(201).send('deletado')      
+    }else{
+        res.status(400).send('nao encontrado')
+    } */
+
+    let indice:number = users.findIndex( users => users.id == userId );
+
+    let indexMessage:number = users[indice].messages.findIndex( messages => messages.id == messageId );
+        console.log(indexMessage)
+            if (indice > -1){
+
+                if (indexMessage > -1) {
+                   
+                    users[indice].messages.splice(indexMessage,1)
+                    res.status(201).send('deletado') 
+                }else{  res.status(400).send(`nao tem mensagens`)}
+
+                
+            }else{  res.status(400).send(`nao tem usuario`)}
 
     
 
